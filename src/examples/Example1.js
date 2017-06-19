@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Form, Field, SubmitButton } from 'react-mini-form';
+import theme from 'react-mini-form/theme';
 
 const LENGTH_OPTIONS = [
   {value: 15, label: '15 minutes'},
@@ -34,8 +35,57 @@ function RatingInput({ name, value, min, max, onChange }) {
   );
 }
 
+class RenderWithCount extends React.Component {
+  count = 0;
+  color = ['red', 'blue', 'green', 'purple'][Math.floor(Math.random() * 4) ]
+
+  render() {
+    this.count += 1;
+
+    const border = `1px dashed ${ this.color }`;
+
+    const divStyle = {
+      position: 'relative',
+      border,
+    };
+
+    const countStyle = {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      padding: '2px 5px',
+      fontSize: 11,
+    };
+
+    return (
+      <div style={divStyle}>
+        <div style={countStyle}>{this.count}</div>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+const customTheme = {
+  ...theme,
+  renderField(...args) {
+    return (
+      <RenderWithCount>
+        {theme.renderField(...args)}
+      </RenderWithCount>
+    );
+  },
+  renderSubmit(...args) {
+    return (
+      <RenderWithCount>
+        {theme.renderSubmit(...args)}
+      </RenderWithCount>
+    );
+  },
+}
+
 let SubmissionForm = () => (
-  <Form defaultValues={FIELDS} submit={remoteCall}>
+  <Form defaultValues={FIELDS} submit={remoteCall} theme={customTheme}>
     <h2>Speaker</h2>
     <Field name="speakerName" label="Name" />
     <Field name="speakerEmail" label="Email" input="email" />
