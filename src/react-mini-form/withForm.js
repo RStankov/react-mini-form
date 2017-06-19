@@ -4,6 +4,8 @@ export default (getState) => (Component) => {
   return class WithForm extends React.Component {
     static displayName = `WithForm(${ Component.displayName || Component.name || 'Component' })`;
 
+  // TODO(rstankov): Copy static props
+
     static contextTypes = {
       formStore: () => null,
       formTheme: () => null,
@@ -14,12 +16,18 @@ export default (getState) => (Component) => {
 
       this.state = getState(context.formStore, this.props) || {};
       this.unsubscribe = context.formStore.subscribe(() => {
-        this.setState(getState(this.context.formStore, this.props) || {});
+        this.updateState(getState(this.context.formStore, this.props) || {});
       });
     }
 
     componentWillReceiveProps(nextProps) {
-      this.setState(getState(this.context.formStore, nextProps) || {});
+      this.updateState(getState(this.context.formStore, nextProps) || {});
+    }
+
+    updateState(newState) {
+      if (!equals(this.state, newState)) {
+        this.setState(newState);
+      }
     }
 
     componentWillUnmount() {
@@ -33,6 +41,28 @@ export default (getState) => (Component) => {
         theme={this.context.formTheme} />;
     }
   };
-
-  // TODO(rstankov): Copy static props
 };
+
+function equals(object1, object2) {
+  for(let key in object1) {
+    if (object1[key] === object2[key]) {
+      continue;
+    }
+
+    if (!Array.isArray(object1[key]) || !Array.isArray(object2[key])) {
+      return false;
+    }
+
+    if (object1[key].length !== object2[key].length) {
+        return false;
+    }
+
+    for(let i = 0, l = object1[key].length; i < l; i++) {
+      if (object1[key][i] !== object2[key][i]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
