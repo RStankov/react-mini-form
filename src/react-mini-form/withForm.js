@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default (setState) => (Component) => {
+export default (getState) => (Component) => {
   return class WithForm extends React.Component {
     static displayName = `WithForm(${ Component.displayName || Component.name || 'Component' })`;
 
@@ -12,14 +12,14 @@ export default (setState) => (Component) => {
     constructor(props, context) {
       super(props, context);
 
-      this.state = setState(context.formStore, this.props) || {};
+      this.state = getState(context.formStore, this.props) || {};
       this.unsubscribe = context.formStore.subscribe(() => {
-        this.setState(setState(this.context.formStore, this.props) || {});
+        this.setState(getState(this.context.formStore, this.props) || {});
       });
     }
 
     componentWillReceiveProps(nextProps) {
-      this.setState(setState(this.context.formStore, nextProps) || {});
+      this.setState(getState(this.context.formStore, nextProps) || {});
     }
 
     componentWillUnmount() {
