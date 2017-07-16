@@ -35,9 +35,14 @@ export default function createStore({ values, validations }) {
     emit();
   }
 
-  function validateField(name) {
+  // TODO(rstankov): Handle race-condition
+  //  -> change1 -> async1
+  //  -> change2 -> async2
+  //  -> async2 done
+  //  -> async1 done (should be ignored)
+  async function validateField(name) {
     const field = getField(name);
-    const error = validate(name, field.value);
+    const error = await validate(name, field.value);
 
     updateField(field, { error, isValidating: false });
   }

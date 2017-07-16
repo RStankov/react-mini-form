@@ -3,9 +3,9 @@ function combineValidations(rules) {
     rules = [rules];
   }
 
-  return (...args) => {
+  return async (...args) => {
     for(let i=0, l=rules.length; i < l; i++) {
-      const error = rules[i](...args);
+      const error = await rules[i](...args);
       if (error) {
         return error;
       }
@@ -25,11 +25,11 @@ function normalizeValidations(validations) {
 export default function createValidator(validations) {
   validations = normalizeValidations(validations);
 
-  return (name, value) => {
+  return async (name, value) => {
     if (!validations[name]) {
       return null;
     }
 
-    return validations[name](value);
+    return await validations[name](value);
   }
 }
