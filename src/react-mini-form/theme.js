@@ -49,12 +49,14 @@ export default {
     );
   },
 
-  renderField({ name, label, input, error, props }) {
+  renderField({ name, label, input, error, isValidating, isFocus, props }) {
     return (
       <div>
         {label && <label htmlFor={name}>{label}: </label>}
         {input}
+        {isValidating && <i>validating...</i>}
         {error && <strong>{error}</strong>}
+        {isFocus && <i>(focus)</i>}
       </div>
     );
   },

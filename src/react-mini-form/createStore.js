@@ -14,6 +14,8 @@ export default function createStore({ values, validations }) {
         name,
         value: values[name] || '',
         error: null,
+        isValidating: false,
+        isFocus: false,
       };
       return acc;
     }, {}),
@@ -37,11 +39,7 @@ export default function createStore({ values, validations }) {
     const field = getField(name);
     const error = validate(name, field.value);
 
-    if (error === field.error) {
-      return;
-    }
-
-    updateField(name, { ...field, error });
+    updateField(name, { ...field, error, isValidating: false });
   }
 
   return {
@@ -52,7 +50,6 @@ export default function createStore({ values, validations }) {
     getStatus() {
       return state.status;
     },
-
 
     getValue(name) {
       return getField(name).value;
@@ -75,8 +72,18 @@ export default function createStore({ values, validations }) {
 
     handleInputBlur(e) {
       const name = e.target.name;
+      const field = getField(name);
 
       validateField(name);
+
+      updateField(name, { ...field, isFocus: false });
+    },
+
+    handleInputFocus(e) {
+      const name = e.target.name;
+      const field = getField(name);
+
+      updateField(name, { ...field, isFocus: true });
     },
 
     handleInputChange(e) {
@@ -88,7 +95,7 @@ export default function createStore({ values, validations }) {
         return;
       }
 
-      updateField(name, { ...field, value });
+      updateField(name, { ...field, value, isValidating: true });
 
       debounce(name, validateField);
     },

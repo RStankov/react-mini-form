@@ -9,6 +9,8 @@ function Field({ theme, field, name, label, input, ...props }) {
     name,
     label: label,
     error: field.error ? theme.errorMessage({ ...field, label }) : null,
+    isValidating: field.isValidating,
+    isFocus: field.isFocus,
     props: {},
     input: theme.renderInput({
       input,
@@ -22,6 +24,7 @@ function Field({ theme, field, name, label, input, ...props }) {
 export default withForm((form, { name }) => {
   return {
     field: form.getField(name),
+    onFocus: form.handleInputFocus,
     onBlur: form.handleInputBlur,
     onChange: form.handleInputChange,
   };
