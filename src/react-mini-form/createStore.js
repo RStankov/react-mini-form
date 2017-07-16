@@ -41,8 +41,8 @@ export default function createStore({ values, validations }) {
       return state.values[name];
     },
 
-    getErrors(name) {
-      return state.errors[name] || [];
+    getError(name) {
+      return (state.errors[name] || [])[0] || null;
     },
 
     getValues() {
