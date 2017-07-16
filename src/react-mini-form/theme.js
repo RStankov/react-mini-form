@@ -36,8 +36,8 @@ export default {
     radioGroup: RadioGroup,
   },
 
-  errorMessage({ label, error }) {
-    return ` ${ error }`;
+  errorMessage({ error }) {
+    return error;
   },
 
   renderInput({ input, ...props }) {
