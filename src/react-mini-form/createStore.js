@@ -40,6 +40,17 @@ export default function createStore({ values, validations }) {
       emit();
     },
 
+    handleInputBlur(e) {
+      const name = e.target.name;
+
+      state.errors = {
+        ...state.errors,
+        [name]: validate(name, state.values[name]),
+      };
+
+      emit();
+    },
+
     handleInputChange(e) {
       const name = e.target.name;
       const value = e.target.value;

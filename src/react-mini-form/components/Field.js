@@ -20,6 +20,7 @@ export default withForm((form, { name }) => {
   return {
     value: form.getValue(name),
     errors: form.getErrors(name),
+    onBlur: form.handleInputBlur,
     onChange: form.handleInputChange,
   };
 })(Field);

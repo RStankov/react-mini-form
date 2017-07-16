@@ -109,6 +109,7 @@ function isEmail(value) {
 }
 
 const validations = {
+  speakerName: [isRequired],
   speakerEmail: [isRequired, isEmail, length({ min: 5, max: 20 })],
 };
 
