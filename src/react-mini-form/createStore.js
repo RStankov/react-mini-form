@@ -1,16 +1,6 @@
 import createValidator from './createValidator';
 import createEmitter from './createEmitter';
-
-function createDebouncer(wait) {
-  let timeouts = {};
-  return (name, cb) => {
-    clearTimeout(timeouts[name]);
-    timeouts[name] = setTimeout(() => {
-      Reflect.deleteProperty(timeouts, name);
-      cb(name);
-    }, wait);
-  };
-}
+import createDebouncer from './createDebouncer';
 
 export default function createStore({ values, validations }) {
   const { subscribe, emit } = createEmitter();
