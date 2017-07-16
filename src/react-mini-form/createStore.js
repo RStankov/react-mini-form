@@ -35,7 +35,7 @@ export default function createStore({ values, validations }) {
 
   function validateField(name) {
     const field = getField(name);
-    const error = validate(name, field.value)[0] || null;
+    const error = validate(name, field.value);
 
     if (error === field.error) {
       return;

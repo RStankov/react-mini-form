@@ -3,7 +3,16 @@ function combineValidations(rules) {
     rules = [rules];
   }
 
-  return (...args) => rules.map((validate) => validate(...args)).filter(Boolean);
+  return (...args) => {
+    for(let i=0, l=rules.length; i < l; i++) {
+      const error = rules[i](...args);
+      if (error) {
+        return error;
+      }
+    }
+
+    return null;
+  };
 }
 
 function normalizeValidations(validations) {
@@ -18,9 +27,9 @@ export default function createValidator(validations) {
 
   return (name, value) => {
     if (!validations[name]) {
-      return [];
+      return null;
     }
 
-    return validations[name](value) || [];
+    return validations[name](value);
   }
 }
