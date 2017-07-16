@@ -84,8 +84,22 @@ const customTheme = {
   },
 }
 
+function isRequired(value) {
+  return !value || value.length === 0 ? 'required' : null;
+}
+
+function maxLength(length) {
+  return (value) => {
+    return value && value.length > length ? 'length' : null;
+  };
+}
+
+const validations = {
+  speakerEmail: [isRequired, maxLength(10)],
+};
+
 let SubmissionForm = () => (
-  <Form defaultValues={FIELDS} submit={remoteCall} theme={customTheme}>
+  <Form defaultValues={FIELDS} validations={validations} submit={remoteCall} theme={customTheme}>
     <h2>Speaker</h2>
     <Field name="speakerName" label="Name" />
     <Field name="speakerEmail" label="Email" input="email" />

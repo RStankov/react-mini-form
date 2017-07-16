@@ -1,3 +1,5 @@
+import createValidator from './createValidator';
+
 function createEmitter() {
   let listeners = [];
   let isEmitting = false;
@@ -36,8 +38,10 @@ function createEmitter() {
   };
 }
 
-export default function createStore(values) {
+export default function createStore({ values, validations }) {
   const { subscribe, emit } = createEmitter();
+
+  const validate = createValidator(validations);
 
   let state = {
     values: values,
@@ -78,6 +82,11 @@ export default function createStore(values) {
       state.values = {
         ...state.values,
         [name]: value
+      };
+
+      state.errors = {
+        ...state.errors,
+        [name]: validate(name, value),
       };
 
       emit();

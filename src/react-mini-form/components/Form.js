@@ -4,7 +4,11 @@ import createStore from '../createStore';
 import theme from '../theme';
 
 export default class Form extends React.Component {
-  store = createStore(this.props.defaultValues);
+  // TODO(rstankov): handle when props change
+  store = createStore({
+    values: this.props.defaultValues,
+    validations: this.props.validations || {},
+  });
 
   static childContextTypes = {
     formStore: () => null,
