@@ -85,17 +85,31 @@ const customTheme = {
 }
 
 function isRequired(value) {
-  return !value || value.length === 0 ? 'required' : null;
+  if (!value || value.length === 0) {
+    return 'required';
+  }
 }
 
-function maxLength(length) {
+function length({ min, max }) {
   return (value) => {
-    return value && value.length > length ? 'length' : null;
+    if (min !== undefined && value.length < min) {
+      return 'too_short';
+    }
+
+    if (max !== undefined && value.length > max) {
+      return 'too_long';
+    }
   };
 }
 
+function isEmail(value) {
+  if (value.indexOf('@') === -1) {
+    return 'email';
+  }
+}
+
 const validations = {
-  speakerEmail: [isRequired, maxLength(10)],
+  speakerEmail: [isRequired, isEmail, length({ min: 5, max: 20 })],
 };
 
 let SubmissionForm = () => (
