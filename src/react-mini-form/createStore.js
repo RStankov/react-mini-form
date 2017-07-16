@@ -1,6 +1,7 @@
 import createValidator from './createValidator';
 import createEmitter from './createEmitter';
 import createDebouncer from './createDebouncer';
+import equals from './equals';
 
 export default function createStore({ values, validations }) {
   const { subscribe, emit } = createEmitter();
@@ -13,6 +14,21 @@ export default function createStore({ values, validations }) {
     errors: {},
     status: 'default',
   };
+
+  function validateField(name) {
+    const error = validate(name, state.values[name]);
+
+    if (equals(error, state.errors[name] || [])) {
+      return;
+    }
+
+    state.errors = {
+      ...state.errors,
+      [name]: validate(name, state.values[name]),
+    };
+
+    emit();
+  }
 
   return {
     subscribe,
@@ -43,17 +59,16 @@ export default function createStore({ values, validations }) {
     handleInputBlur(e) {
       const name = e.target.name;
 
-      state.errors = {
-        ...state.errors,
-        [name]: validate(name, state.values[name]),
-      };
-
-      emit();
+      validateField(name);
     },
 
     handleInputChange(e) {
       const name = e.target.name;
       const value = e.target.value;
+
+      if (value === state.values[name]) {
+        return;
+      }
 
       state.values = {
         ...state.values,
@@ -62,14 +77,7 @@ export default function createStore({ values, validations }) {
 
       emit();
 
-      debounce(name, (name) => {
-        state.errors = {
-          ...state.errors,
-          [name]: validate(name, state.values[name]),
-        };
-
-        emit();
-      });
+      debounce(name, validateField);
     },
   }
 }
