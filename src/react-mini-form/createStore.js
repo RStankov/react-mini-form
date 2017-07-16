@@ -1,7 +1,6 @@
 import createValidator from './createValidator';
 import createEmitter from './createEmitter';
 import createDebouncer from './createDebouncer';
-import equals from './equals';
 
 export default function createStore({ values, validations }) {
   const { subscribe, emit } = createEmitter();
@@ -10,47 +9,65 @@ export default function createStore({ values, validations }) {
   const debounce = createDebouncer(1500);
 
   let state = {
-    values: values,
-    errors: {},
+    fields: Object.keys(values).reduce((acc, name) => {
+      acc[name] = {
+        name,
+        value: values[name] || '',
+        error: null,
+      };
+      return acc;
+    }, {}),
     status: 'default',
   };
 
-  function validateField(name) {
-    const error = validate(name, state.values[name]);
+  function getField(name) {
+    return state.fields[name] || { name, value: '', error: null };
+  }
 
-    if (equals(error, state.errors[name] || [])) {
-      return;
-    }
-
-    state.errors = {
-      ...state.errors,
-      [name]: validate(name, state.values[name]),
+  function updateField(name, newField) {
+    state.fields = {
+      ...state.fields,
+      [name]: newField,
     };
 
     emit();
   }
 
+  function validateField(name) {
+    const field = getField(name);
+    const error = validate(name, field.value)[0] || null;
+
+    if (error === field.error) {
+      return;
+    }
+
+    updateField(name, { ...field, error });
+  }
+
   return {
     subscribe,
+
+    getField,
 
     getStatus() {
       return state.status;
     },
 
+
     getValue(name) {
-      return state.values[name];
+      return getField(name).value;
     },
 
     getError(name) {
-      return (state.errors[name] || [])[0] || null;
+      return getField(name).error;
     },
 
     getValues() {
-      return state.values;
+      return Object.value(state.fields).map(({ value }) => value);
     },
 
     setStatus(status) {
-      state.errors = {}; // TODO(rstankov): Maybe we shouldn't always hide errors
+      // TODO(rstankov): Re-validate, handle server side errors
       state.status = status;
 
       emit();
@@ -65,17 +82,13 @@ export default function createStore({ values, validations }) {
     handleInputChange(e) {
       const name = e.target.name;
       const value = e.target.value;
+      const field = getField(name);
 
-      if (value === state.values[name]) {
+      if (value === field.value) {
         return;
       }
 
-      state.values = {
-        ...state.values,
-        [name]: value
-      };
-
-      emit();
+      updateField(name, { ...field, value });
 
       debounce(name, validateField);
     },

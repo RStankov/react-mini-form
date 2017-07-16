@@ -1,15 +1,19 @@
 import withForm from '../withForm';
 
-function Field({ theme, value, error, name, label, input, ...props }) {
+function Field({ theme, field, name, label, input, ...props }) {
+  if (!name) {
+    label = name;
+  }
+
   return theme.renderField({
     name,
-    label: label || name,
-    error: error ? theme.errorMessage({ name, label: label || name, value, error }) : null,
+    label: label,
+    error: field.error ? theme.errorMessage({ ...field, label }) : null,
     props: {},
     input: theme.renderInput({
       input,
       name,
-      value,
+      value: field.value,
       ...props,
     }),
   });
@@ -17,8 +21,7 @@ function Field({ theme, value, error, name, label, input, ...props }) {
 
 export default withForm((form, { name }) => {
   return {
-    value: form.getValue(name),
-    error: form.getError(name),
+    field: form.getField(name),
     onBlur: form.handleInputBlur,
     onChange: form.handleInputChange,
   };
