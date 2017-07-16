@@ -4,7 +4,7 @@ export default (getState) => (Component) => {
   return class WithForm extends React.Component {
     static displayName = `WithForm(${ Component.displayName || Component.name || 'Component' })`;
 
-  // TODO(rstankov): Copy static props
+    // TODO(rstankov): Copy static props
 
     static contextTypes = {
       formStore: () => null,
@@ -43,7 +43,7 @@ export default (getState) => (Component) => {
   };
 };
 
-export default function equals(object1, object2) {
+function equals(object1, object2) {
   for(let key in object1) {
     if (object1[key] === object2[key]) {
       continue;

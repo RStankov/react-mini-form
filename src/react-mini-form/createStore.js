@@ -71,9 +71,9 @@ export default function createStore({ values, validations }) {
       const name = e.target.name;
       const field = getField(name);
 
-      validateField(name);
-
       updateField(field, { isFocus: false });
+
+      validateField(name);
     },
 
     handleInputFocus(e) {
