@@ -36,6 +36,10 @@ export default {
     radioGroup: RadioGroup,
   },
 
+  errorMessage({ label, error }) {
+    return ` ${ error }`;
+  },
+
   renderInput({ input, ...props }) {
     const Component = typeof input === 'function' ? input : this.inputs[input] || Input;
     const inputProps = Component === Input ? { type: input, ...props } : props;
@@ -45,12 +49,12 @@ export default {
     );
   },
 
-  renderField({ name, label, input, errors, props }) {
+  renderField({ name, label, input, error, props }) {
     return (
       <div>
         {label && <label htmlFor={name}>{label}: </label>}
         {input}
-        {errors.length > 0 && <strong>{errors[0]}</strong>}
+        {error && <strong>{error}</strong>}
       </div>
     );
   },

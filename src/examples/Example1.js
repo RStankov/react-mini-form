@@ -86,25 +86,25 @@ const customTheme = {
 
 function isRequired(value) {
   if (!value || value.length === 0) {
-    return 'required';
+    return 'is required';
   }
 }
 
 function length({ min, max }) {
   return (value) => {
     if (min !== undefined && value.length < min) {
-      return 'too_short';
+      return `should be more than ${ min } characters`;
     }
 
     if (max !== undefined && value.length > max) {
-      return 'too_long';
+      return `should be less than ${ max } characters`;
     }
   };
 }
 
 function isEmail(value) {
   if (value.indexOf('@') === -1) {
-    return 'email';
+    return 'should be valid email address';
   }
 }
 
