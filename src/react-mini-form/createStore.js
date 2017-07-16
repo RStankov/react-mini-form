@@ -1,10 +1,22 @@
 import createValidator from './createValidator';
 import createEmitter from './createEmitter';
 
+function createDebouncer(wait) {
+  let timeouts = {};
+  return (name, cb) => {
+    clearTimeout(timeouts[name]);
+    timeouts[name] = setTimeout(() => {
+      Reflect.deleteProperty(timeouts, name);
+      cb(name);
+    }, wait);
+  };
+}
+
 export default function createStore({ values, validations }) {
   const { subscribe, emit } = createEmitter();
 
   const validate = createValidator(validations);
+  const debounce = createDebouncer(1500);
 
   let state = {
     values: values,
@@ -47,12 +59,16 @@ export default function createStore({ values, validations }) {
         [name]: value
       };
 
-      state.errors = {
-        ...state.errors,
-        [name]: validate(name, value),
-      };
-
       emit();
+
+      debounce(name, (name) => {
+        state.errors = {
+          ...state.errors,
+          [name]: validate(name, state.values[name]),
+        };
+
+        emit();
+      });
     },
   }
 }
