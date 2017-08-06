@@ -39,8 +39,8 @@ export default {
     radioGroup: RadioGroup,
   },
 
-  errorMessage({ error }) {
-    return error;
+  renderError({ error }) {
+    return <strong>{error}</strong>;
   },
 
   renderInput({ input, ...props }) {
@@ -62,10 +62,7 @@ export default {
           </label>}
         {input}
         {isValidating && <i>validating...</i>}
-        {error &&
-          <strong>
-            {error}
-          </strong>}
+        {error}
         {isFocus && <i>(focus)</i>}
       </div>
     );

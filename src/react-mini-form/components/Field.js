@@ -10,7 +10,7 @@ function Field({ theme, field, name, label, input, ...props }) {
     label: label,
     error:
       field.clientError || field.serverError
-        ? theme.errorMessage({ error: field.clientError || field.serverError })
+        ? theme.renderError({ error: field.clientError || field.serverError })
         : null,
     isValidating: field.isValidating,
     isFocus: field.isFocus,
