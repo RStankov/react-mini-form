@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Form, Field, SubmitButton } from 'react-mini-form';
+import { Form } from 'react-mini-form';
 import theme from 'react-mini-form/theme';
 
 const LENGTH_OPTIONS = [
@@ -116,15 +116,15 @@ const validations = {
 let SubmissionForm = () => (
   <Form defaultValues={FIELDS} validations={validations} submit={remoteCall} theme={customTheme}>
     <h2>Speaker</h2>
-    <Field name="speakerName" label="Name" />
-    <Field name="speakerEmail" label="Email" input="email" />
+    <Form.Field name="speakerName" label="Name" />
+    <Form.Field name="speakerEmail" label="Email" input="email" />
     <h2>Talk</h2>
-    <Field name="talkTitle" label="Title" />
-    <Field name="talkDescription" label="Description" input="textarea" />
-    <Field name="talkLength" label="Length" input="select" options={LENGTH_OPTIONS} />
-    <Field name="notifyVia" label="Notify me via" input="radioGroup" options={VIA_OPTIONS} />
-    <Field name="level" label="Level" input={RatingInput} min={0} max={5} />
-    <SubmitButton>Submit</SubmitButton>
+    <Form.Field name="talkTitle" label="Title" />
+    <Form.Field name="talkDescription" label="Description" input="textarea" />
+    <Form.Field name="talkLength" label="Length" input="select" options={LENGTH_OPTIONS} />
+    <Form.Field name="notifyVia" label="Notify me via" input="radioGroup" options={VIA_OPTIONS} />
+    <Form.Field name="level" label="Level" input={RatingInput} min={0} max={5} />
+    <Form.Submit>Submit</Form.Submit>
   </Form>
 );
 
