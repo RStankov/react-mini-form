@@ -1,32 +1,35 @@
 import React from 'react';
 
-let Select = ({ options, ...props }) => (
+let Select = ({ options, ...props }) =>
   <select {...props}>
-    {options.map(({ label, value }, i) => (
-      <option key={i} value={value}>{label || value}</option>
-    ))}
-  </select>
-);
+    {options.map(({ label, value }, i) =>
+      <option key={i} value={value}>
+        {label || value}
+      </option>,
+    )}
+  </select>;
 
-let Textarea = ({ ...props }) => (
-  <textarea {...props} />
-);
+let Textarea = ({ ...props }) => <textarea {...props} />;
 
-let Input = ({ ...props }) => (
-  <input {...props} />
-);
+let Input = ({ ...props }) => <input {...props} />;
 
-let RadioGroup = ({ value: fieldValue, options, name, id, ...props }) => (
+let RadioGroup = ({ value: fieldValue, options, name, id, ...props }) =>
   <ul>
-    {options.map(({ label, value }, i) => (
+    {options.map(({ label, value }, i) =>
       <li key={i}>
         <label>
-          <input type="radio" name={name} value={value} checked={value === fieldValue} {...props} /> {label || value}
+          <input
+            type="radio"
+            name={name}
+            value={value}
+            checked={value === fieldValue}
+            {...props}
+          />{' '}
+          {label || value}
         </label>
-      </li>
-    ))}
-  </ul>
-);
+      </li>,
+    )}
+  </ul>;
 
 export default {
   inputs: {
@@ -41,21 +44,28 @@ export default {
   },
 
   renderInput({ input, ...props }) {
-    const Component = typeof input === 'function' ? input : this.inputs[input] || this.inputs.text;
+    const Component =
+      typeof input === 'function'
+        ? input
+        : this.inputs[input] || this.inputs.text;
     const inputProps = Component === Input ? { type: input, ...props } : props;
 
-    return (
-      <Component {...inputProps} />
-    );
+    return <Component {...inputProps} />;
   },
 
   renderField({ name, label, input, error, isValidating, isFocus, props }) {
     return (
       <div>
-        {label && <label htmlFor={name}>{label}: </label>}
+        {label &&
+          <label htmlFor={name}>
+            {label}:{' '}
+          </label>}
         {input}
         {isValidating && <i>validating...</i>}
-        {error && <strong>{error}</strong>}
+        {error &&
+          <strong>
+            {error}
+          </strong>}
         {isFocus && <i>(focus)</i>}
       </div>
     );
@@ -67,7 +77,8 @@ export default {
         {...otherProps}
         type="submit"
         value={isSubmitting ? 'Submitting...' : children}
-        disabled={isSubmitting} />
+        disabled={isSubmitting}
+      />
     );
   },
 
@@ -79,4 +90,3 @@ export default {
     // TODO(rstankov): ~
   },
 };
-
