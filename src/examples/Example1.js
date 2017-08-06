@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Form } from 'react-mini-form';
-import theme from 'react-mini-form/theme';
+import { Form, createTheme, defaultTheme } from 'react-mini-form';
 
 const LENGTH_OPTIONS = [
   {value: 15, label: '15 minutes'},
@@ -66,23 +65,22 @@ class RenderWithCount extends React.Component {
   }
 }
 
-const customTheme = {
-  ...theme,
+const customTheme = createTheme({
   renderField(...args) {
     return (
       <RenderWithCount>
-        {theme.renderField(...args)}
+        {defaultTheme.renderField(...args)}
       </RenderWithCount>
     );
   },
   renderSubmit(...args) {
     return (
       <RenderWithCount>
-        {theme.renderSubmit(...args)}
+        {defaultTheme.renderSubmit(...args)}
       </RenderWithCount>
     );
   },
-}
+})
 
 function isRequired(value) {
   if (!value || value.length === 0) {
