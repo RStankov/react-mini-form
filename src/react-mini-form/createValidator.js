@@ -22,7 +22,15 @@ function normalizeValidations(validations) {
   }, {});
 }
 
+function noValidations() {
+  return null;
+}
+
 export default function createValidator(validations) {
+  if (!Object.keys(validations).length) {
+    return noValidations;
+  }
+
   validations = normalizeValidations(validations);
 
   return async (name, value) => {
