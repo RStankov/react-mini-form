@@ -1,7 +1,7 @@
 import withForm from '../withForm';
 
 function Field({ theme, field, name, label, input, ...props }) {
-  if (!name) {
+  if (!label) {
     label = name;
   }
 
