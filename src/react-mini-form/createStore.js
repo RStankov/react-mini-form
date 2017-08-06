@@ -57,7 +57,10 @@ export default function createStore({ values, validations }) {
     },
 
     getValues() {
-      return Object.value(state.fields).map(({ value }) => value);
+      return Object.values(state.fields).reduce((acc, { name, value }) => {
+        acc[name] = value;
+        return acc;
+      }, {});
     },
 
     setStatus(status) {
