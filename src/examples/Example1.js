@@ -119,7 +119,6 @@ let SubmissionForm = () =>
     defaultValues={FIELDS}
     validations={VALIDATIONS}
     submit={remoteCall}
-    afterSubmit={afterSubmit}
     theme={customTheme}>
     <h2>Speaker</h2>
     <Form.Field name="speakerName" label="Name" />
@@ -160,11 +159,7 @@ async function remoteCall(values) {
     return { errors: [{ field: 'speakerEmail', messages: ['already registered'] }]};
   }
 
-  return { node: 'success' };
-}
-
-function afterSubmit(...args) {
-  console.log('afterSubmit', ...args);
+  console.log('success');
 }
 
 export default SubmissionForm;

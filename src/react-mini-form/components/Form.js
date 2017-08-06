@@ -54,7 +54,7 @@ export default class Form extends React.Component {
       return;
     }
 
-    const { node, errors } = await this.props.submit(this.store.getValues());
+    const { errors } = await this.props.submit(this.store.getValues()) || {};
 
     // NOTE(rstankov): When form was removed from page before submit is done
     if (this.isUnmounted) {
@@ -65,11 +65,6 @@ export default class Form extends React.Component {
 
     if (errors && errors.length > 0) {
       this.store.handleServerErrors(errors);
-      return;
-    }
-
-    if (this.props.afterSubmit) {
-      this.props.afterSubmit(node);
     }
   };
 }

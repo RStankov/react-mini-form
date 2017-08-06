@@ -124,7 +124,7 @@ export default function createStore({ values, validations }) {
       updateField(field, {
         value,
         isValidating: true,
-        isChanged: field.value === field.defaultValue,
+          isChanged: field.value === field.defaultValue,
       });
 
       debounce(name, validateFieldByName);
