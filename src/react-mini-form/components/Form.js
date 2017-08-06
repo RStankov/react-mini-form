@@ -3,6 +3,9 @@ import React from 'react';
 import createStore from '../createStore';
 import theme from '../theme';
 
+import Field from './Field';
+import SubmitButton from './SubmitButton';
+
 export default class Form extends React.Component {
   // TODO(rstankov): handle when props change
   store = createStore({
@@ -23,6 +26,12 @@ export default class Form extends React.Component {
     };
   }
 
+  isUnmounted: boolean = false;
+
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
   render() {
     // TODO(rstankov): pass props
     return (
@@ -35,22 +44,29 @@ export default class Form extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (this.store.status() === 'submitting');
+    if (this.store.getStatus() === 'submitting');
 
     this.store.setStatus('submitting');
 
-    this.props.submit(this.store.getValues());
+    const { node, errors } = await this.props.submit(this.store.getValues());
 
-    /*
-    TODO
-
-    if (this.state.isSubmitting) {
+    // NOTE(rstankov): When form was removed from page before submit is done
+    if (this.isUnmounted) {
       return;
     }
 
-    this.setState({ isSubmitting: true, errors: {} });
+    if (errors && errors.length > 0) {
+      // TODO(rstankov): handle server errors
+      return;
+    }
 
-    const { errors } = await this.props.onSubmit(this.state.fields);
-    */
+    this.store.setStatus('default');
+
+    if (this.props.afterSubmit) {
+      this.props.afterSubmit(node);
+    }
   };
 }
+
+Form.Field = Field;
+Form.Submit = SubmitButton;
