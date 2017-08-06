@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default (getState) => (Component) => {
-  return class WithForm extends React.Component {
+  return class WithForm extends React.PureComponent {
     static displayName = `WithForm(${ Component.displayName || Component.name || 'Component' })`;
 
     // TODO(rstankov): Copy static props
