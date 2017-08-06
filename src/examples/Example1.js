@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Form, createTheme, defaultTheme } from 'react-mini-form';
+import { Form, createTheme, defaultTheme, withForm } from 'react-mini-form';
 import { isRequired, length, isEmail, format, minValue } from './validations';
 
 const LENGTH_OPTIONS = [
@@ -16,6 +16,8 @@ const VIA_OPTIONS = [
 ];
 
 function NumberInput({ name, value, min, max, onChange }) {
+  value = parseInt(value, 10);
+
   const minus = e => {
     e.preventDefault();
     value === min || onChange({ target: { name, value: value - 1 } });
@@ -27,11 +29,17 @@ function NumberInput({ name, value, min, max, onChange }) {
 
   return (
     <div>
-      <button onClick={minus}>-</button> {value}{' '}
+      <button onClick={minus}>-</button>&nbsp;{value}&nbsp;
       <button onClick={plus}>+</button>
     </div>
   );
 }
+
+const ShowAmount = withForm((form) => {
+  return {
+    amount: form.getField('speakerHourlyRate').value * (form.getField('talkLength').value/60),
+  };
+})(({ amount }) => <strong>${amount}</strong>);
 
 class RenderWithCount extends React.Component {
   count = 0;
@@ -87,17 +95,17 @@ const customTheme = createTheme({
 const FIELDS = {
   speakerName: 'Radoslav',
   speakerEmail: '',
+  speakerHourlyRate: 0,
   talkTitle: '',
   talkDescription: '',
   talkLength: '15',
-  hourlyRate: 0,
 };
 
 const VALIDATIONS = {
   speakerName: [isRequired],
   speakerEmail: [isRequired, isEmail, length({ min: 5, max: 20 })],
-  hourlyRate: [minValue(0)],
-  slot: [format(/[0-2]\d:[0-5]\d/, '[hour]:[minute]')],
+  speakerHourlyRate: [minValue(0)],
+  talkStartsAt: [format(/[0-2]\d:[0-5]\d/, '[hour]:[minute]')],
 };
 
 let SubmissionForm = () =>
@@ -109,8 +117,14 @@ let SubmissionForm = () =>
     <h2>Speaker</h2>
     <Form.Field name="speakerName" label="Name" />
     <Form.Field name="speakerEmail" label="Email" input="email" />
+    <Form.Field
+      name="speakerHourlyRate"
+      label="Hourly rate"
+      input={NumberInput}
+      min={0}
+      max={5}
+    />
     <h2>Talk</h2>
-    <Form.Field name="slot" placeholder="00:00" />
     <Form.Field name="talkTitle" label="Title" />
     <Form.Field name="talkDescription" label="Description" input="textarea" />
     <Form.Field
@@ -125,13 +139,10 @@ let SubmissionForm = () =>
       input="radioGroup"
       options={VIA_OPTIONS}
     />
-    <Form.Field
-      name="hourlyRate"
-      label="Hourly rate"
-      input={NumberInput}
-      min={0}
-      max={5}
-    />
+    <Form.Field name="talkStartsAt" label="Starts at" placeholder="00:00" />
+    <p>
+      Amount: <ShowAmount />
+    </p>
     <Form.Submit>Submit</Form.Submit>
   </Form>;
 
