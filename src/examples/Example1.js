@@ -152,7 +152,7 @@ let SubmissionForm = () =>
     <Form.Submit>Submit</Form.Submit>
   </Form>;
 
-async function remoteCall(values) {
+function remoteCall(values) {
   console.log('submit', values);
 
   if (values.speakerEmail === 'foo@bar') {
