@@ -41,7 +41,7 @@ export default {
   },
 
   renderInput({ input, ...props }) {
-    const Component = typeof input === 'function' ? input : this.inputs[input] || Input;
+    const Component = typeof input === 'function' ? input : this.inputs[input] || this.inputs.text;
     const inputProps = Component === Input ? { type: input, ...props } : props;
 
     return (
