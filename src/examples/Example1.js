@@ -89,6 +89,10 @@ const customTheme = createTheme({
       </RenderWithCount>
     );
   },
+
+  // TODO(rstankov): Try having
+  // - normalize server errors
+  // - normalize submit result
 });
 
 
@@ -113,6 +117,7 @@ let SubmissionForm = () =>
     defaultValues={FIELDS}
     validations={VALIDATIONS}
     submit={remoteCall}
+    afterSubmit={afterSubmit}
     theme={customTheme}>
     <h2>Speaker</h2>
     <Form.Field name="speakerName" label="Name" />
@@ -147,14 +152,17 @@ let SubmissionForm = () =>
   </Form>;
 
 async function remoteCall(values) {
-  console.log(values);
+  console.log('submit', values);
 
   if (!values.speakerName) {
-    return { errors: { speakerName: ['required'] } };
+    return { errors: [{ field: 'speakerName', messages: ['is required (server)'] }]};
   }
 
-  // do ajax and redirect
-  return { result: 'success' };
+  return { node: 'success' };
+}
+
+function afterSubmit(...args) {
+  console.log('afterSubmit', ...args);
 }
 
 export default SubmissionForm;

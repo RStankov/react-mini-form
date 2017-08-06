@@ -55,12 +55,13 @@ export default class Form extends React.Component {
       return;
     }
 
+    this.store.setStatus('default');
+
     if (errors && errors.length > 0) {
+      this.store.handleServerErrors(errors);
       // TODO(rstankov): handle server errors
       return;
     }
-
-    this.store.setStatus('default');
 
     if (this.props.afterSubmit) {
       this.props.afterSubmit(node);

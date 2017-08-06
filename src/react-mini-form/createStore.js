@@ -13,7 +13,8 @@ export default function createStore({ values, validations }) {
       acc[name] = {
         name,
         value: name in values ? values[name] : '',
-        error: null,
+        clientError: null,
+        serverError: null,
         isValidating: false,
         isFocus: false,
       };
@@ -23,7 +24,14 @@ export default function createStore({ values, validations }) {
   };
 
   function getField(name) {
-    return state.fields[name] || { name, value: '', error: null };
+    return (
+      state.fields[name] || {
+        name,
+        value: '',
+        clientError: null,
+        serverError: null,
+      }
+    );
   }
 
   function updateField(field, updates) {
@@ -35,16 +43,20 @@ export default function createStore({ values, validations }) {
     emit();
   }
 
+  function updateFieldByName(name, updates) {
+    updateField(getField(name), updates);
+  }
+
   // TODO(rstankov): Handle race-condition
   //  -> change1 -> async1
   //  -> change2 -> async2
   //  -> async2 done
   //  -> async1 done (should be ignored)
-  async function validateField(name) {
+  async function validateFieldByName(name) {
     const field = getField(name);
     const error = await validate(name, field.value);
 
-    updateField(field, { error, isValidating: false });
+    updateField(field, { clientError: error, isValidating: false });
   }
 
   return {
@@ -70,20 +82,23 @@ export default function createStore({ values, validations }) {
       emit();
     },
 
+    handleServerErrors(errors) {
+      errors.forEach(({ field, messages }) => {
+        updateFieldByName(field, { serverError: messages[0] });
+      });
+    },
+
     handleInputBlur(e) {
       const name = e.target.name;
-      const field = getField(name);
 
-      updateField(field, { isFocus: false });
-
-      validateField(name);
+      updateFieldByName(name, { isFocus: false });
+      validateFieldByName(name);
     },
 
     handleInputFocus(e) {
       const name = e.target.name;
-      const field = getField(name);
 
-      updateField(field, { isFocus: true });
+      updateFieldByName(name, { isFocus: true });
     },
 
     handleInputChange(e) {
@@ -97,7 +112,7 @@ export default function createStore({ values, validations }) {
 
       updateField(field, { value, isValidating: true });
 
-      debounce(name, validateField);
+      debounce(name, validateFieldByName);
     },
-  }
+  };
 }

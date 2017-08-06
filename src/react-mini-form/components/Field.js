@@ -8,7 +8,10 @@ function Field({ theme, field, name, label, input, ...props }) {
   return theme.renderField({
     name,
     label: label,
-    error: field.error ? theme.errorMessage({ ...field, label }) : null,
+    error:
+      field.clientError || field.serverError
+        ? theme.errorMessage({ error: field.clientError || field.serverError })
+        : null,
     isValidating: field.isValidating,
     isFocus: field.isFocus,
     props: {},
