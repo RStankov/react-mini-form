@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Form, createTheme, defaultTheme } from 'react-mini-form';
+import { isRequired, length, isEmail, format, minValue } from './validations';
 
 const LENGTH_OPTIONS = [
   { value: 15, label: '15 minutes' },
@@ -13,15 +14,6 @@ const VIA_OPTIONS = [
   { value: 'push', label: 'Push notification' },
   { value: 'phone', label: 'Phone' },
 ];
-
-const FIELDS = {
-  speakerName: 'Radoslav',
-  speakerEmail: '',
-  talkTitle: '',
-  talkDescription: '',
-  talkLength: '15',
-  hourlyRate: 0,
-};
 
 function NumberInput({ name, value, min, max, onChange }) {
   const minus = e => {
@@ -91,47 +83,17 @@ const customTheme = createTheme({
   },
 });
 
-function isRequired(value) {
-  if (!value || value.length === 0) {
-    return 'is required';
-  }
-}
 
-function length({ min, max }) {
-  return value => {
-    if (min !== undefined && value.length < min) {
-      return `should be more than ${min} characters`;
-    }
+const FIELDS = {
+  speakerName: 'Radoslav',
+  speakerEmail: '',
+  talkTitle: '',
+  talkDescription: '',
+  talkLength: '15',
+  hourlyRate: 0,
+};
 
-    if (max !== undefined && value.length > max) {
-      return `should be less than ${max} characters`;
-    }
-  };
-}
-
-function isEmail(value) {
-  if (value.indexOf('@') === -1) {
-    return 'should be valid email address';
-  }
-}
-
-function format(regexp, description) {
-  return value => {
-    if (!value.match(regexp)) {
-      return `should match ${description} format.`;
-    }
-  };
-}
-
-function minValue(min) {
-  return value => {
-    if (parseFloat(value, 10) < min) {
-      return `should be more than ${min}`;
-    }
-  };
-}
-
-const validations = {
+const VALIDATIONS = {
   speakerName: [isRequired],
   speakerEmail: [isRequired, isEmail, length({ min: 5, max: 20 })],
   hourlyRate: [minValue(0)],
@@ -141,7 +103,7 @@ const validations = {
 let SubmissionForm = () =>
   <Form
     defaultValues={FIELDS}
-    validations={validations}
+    validations={VALIDATIONS}
     submit={remoteCall}
     theme={customTheme}>
     <h2>Speaker</h2>
