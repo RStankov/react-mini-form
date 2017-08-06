@@ -108,6 +108,8 @@ const FIELDS = {
 const VALIDATIONS = {
   speakerName: [isRequired],
   speakerEmail: [isRequired, isEmail, length({ min: 5, max: 20 })],
+  talkTitle: [isRequired],
+  talkDescription: [isRequired],
   speakerHourlyRate: [minValue(0)],
   talkStartsAt: [format(/[0-2]\d:[0-5]\d/, '[hour]:[minute]')],
 };
@@ -154,8 +156,8 @@ let SubmissionForm = () =>
 async function remoteCall(values) {
   console.log('submit', values);
 
-  if (!values.speakerName) {
-    return { errors: [{ field: 'speakerName', messages: ['is required (server)'] }]};
+  if (values.speakerEmail === 'foo@bar') {
+    return { errors: [{ field: 'speakerEmail', messages: ['already registered'] }]};
   }
 
   return { node: 'success' };

@@ -48,6 +48,12 @@ export default class Form extends React.Component {
 
     this.store.setStatus('submitting');
 
+    const isFormValid = await this.store.validateAll();
+    if (!isFormValid) {
+      this.store.setStatus('default');
+      return;
+    }
+
     const { node, errors } = await this.props.submit(this.store.getValues());
 
     // NOTE(rstankov): When form was removed from page before submit is done
@@ -59,7 +65,6 @@ export default class Form extends React.Component {
 
     if (errors && errors.length > 0) {
       this.store.handleServerErrors(errors);
-      // TODO(rstankov): handle server errors
       return;
     }
 

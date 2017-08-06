@@ -57,6 +57,8 @@ export default function createStore({ values, validations }) {
     const error = await validate(name, field.value);
 
     updateField(field, { clientError: error, isValidating: false });
+
+    return !!error;
   }
 
   return {
@@ -76,10 +78,14 @@ export default function createStore({ values, validations }) {
     },
 
     setStatus(status) {
-      // TODO(rstankov): Re-validate, handle server side errors
       state.status = status;
 
       emit();
+    },
+
+    async validateAll() {
+      const results = await Promise.all(Object.keys(state.fields).map(validateFieldByName));
+      return results.filter(Boolean).length === 0;
     },
 
     handleServerErrors(errors) {
