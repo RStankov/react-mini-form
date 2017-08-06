@@ -10,13 +10,16 @@ export default function createStore({ values, validations }) {
 
   let state = {
     fields: Object.keys(values).reduce((acc, name) => {
+      const value = name in values ? values[name] : '';
       acc[name] = {
         name,
-        value: name in values ? values[name] : '',
+        value,
+        defaultValue: value,
         clientError: null,
         serverError: null,
         isValidating: false,
         isFocus: false,
+        isChanged: false,
       };
       return acc;
     }, {}),
@@ -84,7 +87,9 @@ export default function createStore({ values, validations }) {
     },
 
     async validateAll() {
-      const results = await Promise.all(Object.keys(state.fields).map(validateFieldByName));
+      const results = await Promise.all(
+        Object.keys(state.fields).map(validateFieldByName),
+      );
       return results.filter(Boolean).length === 0;
     },
 
@@ -116,7 +121,11 @@ export default function createStore({ values, validations }) {
         return;
       }
 
-      updateField(field, { value, isValidating: true });
+      updateField(field, {
+        value,
+        isValidating: true,
+        isChanged: field.value === field.defaultValue,
+      });
 
       debounce(name, validateFieldByName);
     },
