@@ -12,7 +12,7 @@ export default function createStore({ values, validations }) {
     fields: Object.keys(values).reduce((acc, name) => {
       acc[name] = {
         name,
-        value: values[name] || '',
+        value: name in values ? values[name] : '',
         error: null,
         isValidating: false,
         isFocus: false,
